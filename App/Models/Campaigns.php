@@ -30,20 +30,21 @@ class Campaigns extends Model implements ModelInterface
             $sql = "" .
                 "CREATE TABLE `$tableName`
 			(
-	  			`id` mediumint(9) NOT NULL AUTO_INCREMENT,
-	  			`created_at` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-	  			`updated_at` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-	  			`deleted_at` datetime DEFAULT NULL NULL,
-	  			`created_by` mediumint(9) NOT NULL,
-	  			`updated_by` mediumint(9) NOT NULL,
-	  			`deleted_by` mediumint(9) NOT NULL,
+	  			`id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+	  			`created_at` DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL,
+	  			`updated_at` DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL,
+	  			`deleted_at` DATETIME DEFAULT NULL NULL,
+	  			`created_by` MEDIUMINT(9) NOT NULL,
+	  			`updated_by` MEDIUMINT(9) NOT NULL,
+	  			`deleted_by` MEDIUMINT(9) NOT NULL,
 	  			`name` VARCHAR(250) NOT NULL,
-	  			`keywords` mediumint(9) NOT NULL DEFAULT 0,
-	  			`clicks` mediumint(9) NOT NULL DEFAULT 0,
-	  			`trend` INT(3)  NOT NULL  DEFAULT '100',
-	  			`stared` tinyint(1) DEFAULT FALSE NOT NULL,
-	  			`enabled` tinyint(1) DEFAULT TRUE NOT NULL,
-	  			`default_campaign` tinyint(1) DEFAULT FALSE NOT NULL,
+	  			`slug` VARCHAR(250) NOT NULL,
+	  			`keywords` MEDIUMINT(9) NOT NULL DEFAULT '0',
+	  			`clicks` MEDIUMINT(9) NOT NULL DEFAULT '0',
+	  			`trend` INT(3)  NOT NULL  DEFAULT '0',
+	  			`stared` TINYINT(1) DEFAULT FALSE NOT NULL,
+	  			`enabled` TINYINT(1) DEFAULT TRUE NOT NULL,
+	  			`default_campaign` TINYINT(1) DEFAULT FALSE NOT NULL,
 	  			UNIQUE KEY `id` (id)
 	    	);";
 
@@ -58,12 +59,14 @@ class Campaigns extends Model implements ModelInterface
 				(
 					`created_at`,
 					`name`,
+					`slug`,
 					`enabled`,
 					`default_campaign`
 				)
 				VALUES(
 					'" . date('Y-m-d H:i:s') . "',
 					'Default',
+					'default',
 					TRUE,
 					TRUE
 				)";

@@ -6,4 +6,6 @@
 
     <?php include(__DIR__ . '/../elements/flash_messages.php'); ?>
 
+    <?php var_dump($data); ?>
+
 </div>

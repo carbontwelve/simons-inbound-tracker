@@ -55,12 +55,22 @@ class KeywordAdminController extends Controller
 
     private function index($id = null)
     {
+        // Which record types are we after?
+        $allowedTypes = array('all', 'stared', 'deleted');
+        $type         = ( isset($_GET['type']) ) ? $_GET['type'] : $allowedTypes[0];
+        if (!in_array($type, $allowedTypes)) {
+            $type     = $allowedTypes[0];
+        }
 
 
+        /** @var \Carbontwelve\InboundTracker\Models\Keywords $model */
+        $model = $this->app->getModel('keywords');
+        $data  = $model->getByCampaignID($id, $type);
 
         return $this->app->renderView(
             'keywords.index',
             array(
+                'data'          => $data,
                 'flashMessages' => $this->flashMessages
             )
         );

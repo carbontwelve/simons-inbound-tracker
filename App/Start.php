@@ -26,6 +26,7 @@ class Start
 
         // Register Models
         $this->app->registerModel('campaigns', '\\Carbontwelve\\InboundTracker\\Models\\Campaigns');
+        $this->app->registerModel('keywords', '\\Carbontwelve\\InboundTracker\\Models\\Keywords');
 
         //$this->rewriter = new Rewrite($this->app);
 
