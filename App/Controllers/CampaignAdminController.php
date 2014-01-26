@@ -1,6 +1,6 @@
 <?php namespace Carbontwelve\InboundTracker\Controllers;
 
-class AdminPages extends Controller
+class CampaignAdminController extends Controller
 {
 
     /**
@@ -21,36 +21,22 @@ class AdminPages extends Controller
     public function registerAdminMenu()
     {
         add_menu_page(
-            'Inbound Links', // The text to be displayed in the title tags of the page when the menu is selected
-            'Inbound Links', // The on-screen name text for the menu
+            'View campaigns', // The text to be displayed in the title tags of the page when the menu is selected
+            'Campaigns', // The on-screen name text for the menu
             'manage_options', // The capability required for this menu to be displayed to the user.
             'inbound_links_index', // The slug name to refer to this menu by (should be unique for this menu).
             array($this, 'index_router'), // The function that displays the page content for the menu page.
             plugins_url('simons-inbound-tracker/public/img/icon.png'), // The icon for this menu.
             91.2 // The position in the menu order this menu should appear.
         );
-
-
         add_submenu_page(
             'inbound_links_index', // The slug name for the parent menu
             'Add New Campaign', // The text to be displayed in the title tags of the page when the menu is selected
             'Add New Campaign', // The text to be used for the menu
             'manage_options', // The capability required for this menu to be displayed to the user.
-            'inbound_links_add', // The slug name to refer to this menu by (should be unique for this menu).
+            'inbound_links_record', // The slug name to refer to this menu by (should be unique for this menu).
             array($this, 'record_router')
         );
-
-        /**
-
-        add_submenu_page(
-            'button_board_index', // The slug name for the parent menu
-            'Settings', // The text to be displayed in the title tags of the page when the menu is selected
-            'Settings', // The text to be used for the menu
-            'manage_options', // The capability required for this menu to be displayed to the user.
-            'button_board_settings', // The slug name to refer to this menu by (should be unique for this menu).
-            array($this, 'settings_router')
-        );
-        */
     }
 
     public function index_router()
@@ -82,7 +68,6 @@ class AdminPages extends Controller
                 echo $this->setStar($id, 'unstar');
                 break;
 
-
             case 'index':
             default:
                 echo $this->index();
@@ -109,11 +94,11 @@ class AdminPages extends Controller
                 break;
 
             case 'edit':
-                echo $this->edit();
+                echo $this->edit($id);
                 break;
 
             case 'update':
-                echo $this->update();
+                echo $this->update($id);
                 break;
 
             case 'add':
@@ -161,6 +146,10 @@ class AdminPages extends Controller
         );
     }
 
+    /**
+     * Display new record form
+     * @return string
+     */
     private function add()
     {
         return $this->app->renderView(
@@ -171,9 +160,104 @@ class AdminPages extends Controller
         );
     }
 
+    /**
+     * Create a new campaign record
+     * @return string
+     */
     private function create()
     {
-        var_dump($this->flashMessages['inputs']);
+        // Include darth validation lib
+        require __DIR__ . "/../../Vendor/darth/darth.php";
+
+        $validator = darth(
+            force(
+                'required',
+                'name',
+                'The campaign name field is required'
+            )
+        );
+
+        $this->flashMessages['errors'] = $validator($this->flashMessages['inputs']);
+
+        if (count($this->flashMessages['errors']) > 0) {
+            $this->flashMessages['error'] = "Sorry, your form could not be saved as its not valid. ";
+            return $this->add();
+        } else {
+            /** @var \Carbontwelve\InboundTracker\Models\Campaigns $model */
+            $model = $this->app->getModel('campaigns');
+            $result = $model->insert($this->flashMessages['inputs']);
+
+            if ($result === false) {
+                $this->flashMessages['error'] = "Sorry there was an error saving that form.";
+                return $this->add();
+            } else {
+                $this->flashMessages['success'] = $result . " campaign has been saved.";
+                return $this->index();
+            }
+        }
+    }
+
+    /**
+     * Display edit record form
+     * @param $id
+     * @return string
+     */
+    private function edit($id)
+    {
+
+        /** @var \Carbontwelve\InboundTracker\Models\Campaigns $model */
+        $model = $this->app->getModel('campaigns');
+        $data  = $model->get($id);
+
+        if (is_null($data))
+        {
+            $this->flashMessages['error'] = "That record can't be edited as it doesn't exist.";
+            return $this->index();
+        }
+
+        return $this->app->renderView(
+            'campaigns.edit',
+            array(
+                'data'          => $data,
+                'flashMessages' => $this->flashMessages
+            )
+        );
+    }
+
+    private function update($id)
+    {
+        // Include darth validation lib
+        require __DIR__ . "/../../Vendor/darth/darth.php";
+
+        $validator = darth(
+            force(
+                'required',
+                'name',
+                'The campaign name field is required'
+            )
+        );
+
+        $this->flashMessages['errors'] = $validator($this->flashMessages['inputs']);
+
+        if (count($this->flashMessages['errors']) > 0) {
+            $this->flashMessages['error'] = "Sorry, your form could not be saved as its not valid. ";
+            return $this->edit($id);
+        } else {
+            /** @var \Carbontwelve\InboundTracker\Models\Campaigns $model */
+            $model = $this->app->getModel('campaigns');
+            $result = $model->update($id, $this->flashMessages['inputs']);
+
+            if ($result === 1)
+            {
+                $this->flashMessages['success'] = $result . " campaign has been updating.";
+                return $this->edit($id);
+            }else{
+                $this->flashMessages['error'] = "Sorry there was an error updating that campaign.";
+                return $this->edit($id);
+            }
+
+        }
+
     }
 
     private function setTrash( $id = null, $direction = 'trash')

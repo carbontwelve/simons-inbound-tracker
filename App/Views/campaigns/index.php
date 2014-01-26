@@ -1,7 +1,7 @@
 <div class="wrap">
     <h2>
         Referral Links
-        <a href="<?php echo admin_url(); ?>admin.php?page=inbound_links_add" class="add-new-h2">Add New Campaign</a>
+        <a href="<?php echo admin_url(); ?>admin.php?page=inbound_links_record" class="add-new-h2">Add New Campaign</a>
     </h2>
 
     <?php include(__DIR__ . '/../elements/flash_messages.php'); ?>
@@ -86,7 +86,7 @@
                 <td>
 
                     <?php if (is_null($row->deleted_at)) { ?>
-                    <a href="<?php echo admin_url(); ?>admin.php?page=inbound_links_edit&amp;id=<?php echo $row->id; ?>">
+                    <a href="<?php echo admin_url(); ?>admin.php?page=inbound_links_record&amp;action=edit&amp;id=<?php echo $row->id; ?>">
                         Edit
                     </a>
                     <?php }else{ ?>

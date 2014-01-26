@@ -75,7 +75,8 @@ class Start
         // Add Pages to administration
         if (is_admin())
         {
-            new \Carbontwelve\InboundTracker\Controllers\AdminPages($this->app);
+            new \Carbontwelve\InboundTracker\Controllers\CampaignAdminController($this->app);
+            new \Carbontwelve\InboundTracker\Controllers\KeywordAdminController($this->app);
         }
 
         // Register short codes
