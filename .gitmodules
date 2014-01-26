@@ -1,0 +1,3 @@
+[submodule "Vendor/darth"]
+	path = Vendor/darth
+	url = git@github.com:noodlehaus/darth.git

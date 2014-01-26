@@ -108,6 +108,14 @@ class AdminPages extends Controller
                 echo $this->create();
                 break;
 
+            case 'edit':
+                echo $this->edit();
+                break;
+
+            case 'update':
+                echo $this->update();
+                break;
+
             case 'add':
             default:
                 echo $this->add();
