@@ -13,7 +13,8 @@ class Campaigns extends Model implements ModelInterface
      * @var array
      */
     protected $allowed = array(
-        'name'
+        'name',
+        'slug'
     );
 
     /**

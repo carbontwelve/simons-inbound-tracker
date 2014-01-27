@@ -59,7 +59,7 @@ Class App
         $this->path      = $path;
         $this->pluginUrl = $pluginUrl;
         $this->view      = new View($this->path . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR);
-        //$this->rewriter  = new Rewrite($this);
+        $this->rewriter  = new Rewrite($this);
 
         foreach ($config as $key => $value)
         {

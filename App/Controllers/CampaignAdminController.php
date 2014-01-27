@@ -183,6 +183,10 @@ class CampaignAdminController extends Controller
             $this->flashMessages['error'] = "Sorry, your form could not be saved as its not valid. ";
             return $this->add();
         } else {
+
+            // Create the slug
+            $this->flashMessages['inputs']['slug'] = sanitize_title_with_dashes($this->flashMessages['inputs']['name'], '', 'save');
+
             /** @var \Carbontwelve\InboundTracker\Models\Campaigns $model */
             $model = $this->app->getModel('campaigns');
             $result = $model->insert($this->flashMessages['inputs']);

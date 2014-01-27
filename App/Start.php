@@ -28,15 +28,13 @@ class Start
         $this->app->registerModel('campaigns', '\\Carbontwelve\\InboundTracker\\Models\\Campaigns');
         $this->app->registerModel('keywords', '\\Carbontwelve\\InboundTracker\\Models\\Keywords');
 
-        //$this->rewriter = new Rewrite($this->app);
-
         // If our plugin is loaded and activated then we need to start it up
         add_action('plugins_loaded', array($this, 'loaded'));
 
         // Actions to be added for rewriting
         //add_action( 'generate_rewrite_rules', array($this->app->getRewriter(), 'add_rewrite_rules') );
-        //add_action( 'pre_get_posts',          array($this->app->getRewriter(), 'pre_get_posts') );
-        //add_filter( 'query_vars',             array($this->app->getRewriter(), 'query_vars') );
+        add_action( 'pre_get_posts',          array($this->app->getRewriter(), 'pre_get_posts') );
+        add_filter( 'query_vars',             array($this->app->getRewriter(), 'query_vars') );
     }
 
     /**

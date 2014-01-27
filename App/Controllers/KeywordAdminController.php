@@ -67,9 +67,14 @@ class KeywordAdminController extends Controller
         $model = $this->app->getModel('keywords');
         $data  = $model->getByCampaignID($id, $type);
 
+        /** @var \Carbontwelve\InboundTracker\Models\Campaigns $model */
+        $model = $this->app->getModel('campaigns');
+        $campaign = $model->get($id);
+
         return $this->app->renderView(
             'keywords.index',
             array(
+                'campaign'      => $campaign,
                 'data'          => $data,
                 'flashMessages' => $this->flashMessages
             )
