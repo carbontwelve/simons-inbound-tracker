@@ -35,8 +35,6 @@ class Rewrite
             // If a default campaign can not be found then there has been an error.
             if ( ! is_null($campaign) )
             {
-                var_dump($campaign);
-
                 /** @var \Carbontwelve\InboundTracker\Models\Keywords $model */
                 $model    = $this->app->getModel('keywords');
                 $data     = $model->getByCampaignIDAndKeywordSlug( $campaign->id, $request['keyword'] );
@@ -51,19 +49,12 @@ class Rewrite
                             'enabled'     => 1,
                             'clicks'      => 1,
                         ));
-
                     $data = $model->getByCampaignIDAndKeywordSlug( $campaign->id, $request['keyword'] );
                 }else{
 
                     $model->update($data->id, array( 'clicks' => ( $data->clicks + 1 ) ));
 
                 }
-
-                var_dump($data);
-
-                var_dump($request);
-
-                die();
             }
         }
     }
