@@ -123,4 +123,26 @@ class Campaigns extends Model implements ModelInterface
             return true;
         }
     }
+
+    /**
+     * Get a campaign by its slug
+     * @param null $slug
+     * @return mixed
+     */
+    public function getBySlug( $slug = null )
+    {
+        $query = "SELECT * FROM `" . $this->wpdb->prefix . $this->table . "` WHERE `slug` = %s AND `deleted_at` IS NULL AND `enabled` = TRUE";
+        $query = $this->wpdb->prepare($query, $slug);
+        return $this->wpdb->get_row($query);
+    }
+
+    /**
+     * Get Default campaign
+     * @return mixed
+     */
+    public function getDefault()
+    {
+        $query = "SELECT * FROM `" . $this->wpdb->prefix . $this->table . "` WHERE `default_campaign` = TRUE";
+        return $this->wpdb->get_row($query);
+    }
 }

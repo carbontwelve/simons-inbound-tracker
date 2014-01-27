@@ -18,14 +18,53 @@ class Rewrite
         if ( ! is_admin() && $query->is_main_query() && $query->get( 'utm_campaign' ) ) { // check if user asked for a non-admin page and that query contains except_category_name var
 
             $request = array(
-                'campaign' => $query->get( 'utm_campaign' ),
-                'keyword'  => $query->get( 'utm_term' )
+                'campaign' => strtolower( sanitize_title_with_dashes($query->get( 'utm_campaign' ), '', 'save') ),
+                'keyword'  => strtolower( sanitize_title_with_dashes($query->get( 'utm_term' ), '', 'save') )
             );
 
-            var_dump($request);
+            if ($request['campaign'] === ''){ $request['campaign'] = 'default'; }
+            if ($request['keyword'] === ''){  $request['keyword']  = 'default'; }
 
-            die();
+            /** @var \Carbontwelve\InboundTracker\Models\Campaigns $model */
+            $model    = $this->app->getModel('campaigns');
+            $campaign = $model->getBySlug( $request['campaign'] );
 
+            // If the campaign cant be found by slug then we should get the default campaign
+            if ( is_null($campaign) ){ $campaign = $model->getDefault(); }
+
+            // If a default campaign can not be found then there has been an error.
+            if ( ! is_null($campaign) )
+            {
+                var_dump($campaign);
+
+                /** @var \Carbontwelve\InboundTracker\Models\Keywords $model */
+                $model    = $this->app->getModel('keywords');
+                $data     = $model->getByCampaignIDAndKeywordSlug( $campaign->id, $request['keyword'] );
+
+                // If keyword doesn't exist then create it.
+                if ( is_null( $data ))
+                {
+                    $model->insert(array(
+                            'campaign_id' => $campaign->id,
+                            'name'        => $request['keyword'],
+                            'slug'        => $request['keyword'],
+                            'enabled'     => 1,
+                            'clicks'      => 1,
+                        ));
+
+                    $data = $model->getByCampaignIDAndKeywordSlug( $campaign->id, $request['keyword'] );
+                }else{
+
+                    $model->update($data->id, array( 'clicks' => ( $data->clicks + 1 ) ));
+
+                }
+
+                var_dump($data);
+
+                var_dump($request);
+
+                die();
+            }
         }
     }
 
@@ -39,3 +78,4 @@ class Rewrite
         return $public_query_vars;
     }
 }
+

@@ -13,7 +13,13 @@ class Keywords extends Model implements ModelInterface
      * @var array
      */
     protected $allowed = array(
-        'name'
+        'name',
+        'campaign_id',
+        'slug',
+        'enabled',
+        'stared',
+        'trend',
+        'clicks'
     );
 
     /**
@@ -136,6 +142,13 @@ class Keywords extends Model implements ModelInterface
         $query = 'SELECT * FROM ' . $this->getQueryEnd($type) . ' AND `campaign_id` = %d';
         $query = $this->wpdb->prepare($query, intval($id));
         return $this->wpdb->get_results($query);
+    }
+
+    public function getByCampaignIDAndKeywordSlug( $id = null, $slug = null)
+    {
+        $query = "SELECT * FROM `" . $this->wpdb->prefix . $this->table . "` WHERE `campaign_id` = %d AND `slug` = %s AND `deleted_at` IS NULL AND `enabled` = TRUE";
+        $query = $this->wpdb->prepare($query, array($id, $slug));
+        return $this->wpdb->get_row($query);
     }
 
 }
